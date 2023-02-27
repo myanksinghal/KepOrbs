@@ -47,16 +47,14 @@ show_h=True
 show_RAAN=True
 show_inclination=True
 
-if azim_start<azim_end:
+if azim_start>azim_end:
     az_arr=np.flip(np.arange(azim_end,azim_start,np.abs(azim_end-azim_start)/num_frames))
 else:
     az_arr=np.arange(azim_start,azim_end,np.abs(azim_end-azim_start)/num_frames)
-
-if elev_start<elev_end:
+if elev_start>elev_end:
     el_arr=np.flip(np.arange(elev_end,elev_start,np.abs(elev_end-elev_start)/num_frames))
 else:
-    el_arr=np.arange(elev_start,elev_end,np.abs(elev_end-elev_start)/num_frames))
-
+    el_arr=np.arange(elev_start,elev_end,np.abs(elev_end-elev_start)/num_frames)
 dark_red="#c1272d"
 indigo="#0000a7" #- Indigo
 yellow="#eecc16" #- Yellow
@@ -78,7 +76,7 @@ def visualisation_plot(n):
     r_a=a*(1+e)
     p = a * (1 - e ** 2)
 
-    inclination = inc_arr[n]
+    inclination = inc_array[n]
     raan = raan_array[n]
     omega = omega_array[n]
 
@@ -240,7 +238,7 @@ if not os.path.isdir("temp_anim_folder"):
 
 Parallel(n_jobs=6)(delayed(visualisation_plot)(num) for num in tqdm(range(num_frames)))
 
-ffmpeg=(FFmpeg(inputs={"temp_anim_folder/frame_%d.png":None},outputs={savename:f"-framerate {framerate}"}))
+ffmpeg=(FFmpeg(inputs={"temp_anim_folder/frame_%d.png":{'-y'}},outputs={savename:f"-framerate {framerate}"}))
 ffmpeg.run()
 
 shutil.rmtree("temp_anim_folder")
